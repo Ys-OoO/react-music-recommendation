@@ -1,0 +1,187 @@
+.container{
+   height: 100vh;
+   width: 100vw;
+
+   .otherContainer{
+      height: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+
+      .playCardContainer{
+         position: absolute;
+         width: 18rem;
+         height: 22rem;
+         right: 4rem;
+         top: 2rem;
+         border: 8px solid #29323c;
+         border-radius: 1.5rem;
+         overflow: hidden;
+
+         .contentBox{
+            display: flex;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+            
+            img{
+              border-radius: 50%;
+              width: 12rem;
+              height: 12rem;
+            }
+
+            @keyframes image-rotate {
+              0% {
+                rotate: 0deg;
+              }
+              100% {
+                rotate: 360deg;
+              }
+            }
+            
+            .rotate-animation {
+              animation: image-rotate 10s infinite linear; 
+            }
+
+            .musicInfo{
+              flex:1 1 0;
+              color: #eee;
+              text-align:center;
+              padding-top: 14px;
+              font-size: 18px;
+              font-family: 'Do Hyeon';
+
+              .name{
+                margin-top: 8px;
+              }
+              .singer{
+                margin-top: 8px;
+              }
+            }
+
+            .footer{
+              height: 30px;
+              width: 100%;
+              margin-bottom: 8px;
+              margin-left: 8px;
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              align-items: center;
+
+              .progressBar{
+                position: relative;
+                width: 100%;
+                margin-right: 8px;
+                height: 8px;
+                margin-left: 4px;
+                border-radius: 4px;
+                background-color: #ddd;
+
+                .curProgress{
+                  position: absolute;
+                  border-radius: 3px;
+                  background-color: #223447;
+                  height: 100%;
+                }
+              }
+            }
+         }
+      }
+      
+      @keyframes fadein {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      
+      .fadeIn-animation {
+        animation: fadein 2s ease-in-out; /* 持续 2 秒，缓动效果为 ease-in-out */
+      }
+   }
+
+   .listContainer{
+      height: 50%;
+      width: 100%;
+
+      .cardList{
+         position: relative;
+         display: flex;
+         height: 50%;
+         width: 50%;
+         left: 50%;
+         top: 50%;
+         transform: translateX(-50%) translateY(-50%);
+   
+         .poker{
+            position: absolute;
+            width: 12rem;
+            height: 16rem;
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            border: 0.15rem solid #fff;
+            border-radius: 1.5rem;
+            background-color: #17f700;
+            transform-origin: bottom left;
+            overflow: hidden;
+            
+            img{
+               position:absolute;
+               width: 100%;
+               height: 100%;
+            }
+        }
+
+        .pokerclone{
+            position: absolute;
+            width: 12rem;
+            height: 16rem;
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            border: 0.15rem solid #fff;
+            border-radius: 1.5rem;
+            background-color: #17f700;
+            transform-origin: bottom left;
+            overflow: hidden;
+            opacity: 0;
+            img{
+               position:absolute;
+               width: 100%;
+               height: 100%;
+            }
+        }
+
+        @keyframes moveAnimation {
+         0% {
+           transform: translateY(-80%);
+           opacity: 1;
+         }
+         50% {
+           transform: translate(322%, -229%);
+           opacity: 0;
+         }
+         100% {
+           transform: translateX(0);
+         }
+       }
+       
+       .move-animation {
+         animation: moveAnimation 2s ease-in-out; /* 持续 2 秒，缓动效果为 ease-in-out */
+       }
+      }
+   }
+
+
+}
+
+
+

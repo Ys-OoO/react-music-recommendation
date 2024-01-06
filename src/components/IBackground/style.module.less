@@ -1,0 +1,66 @@
+@property --textContent {
+  syntax: "<string>";
+}
+
+.wallpaper{
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: 50%;
+  z-index: -100;
+  background-color: #000000;
+  overflow: hidden;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4rem;
+  font-family: 'Do Hyeon';
+
+  .textContainer{
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    
+    .chipName{
+      position: absolute;
+      font-size: 4rem;
+      letter-spacing: 0.5rem;
+      user-select: none;
+    }
+  
+    .fault{
+        
+      &::after, &::before{
+        content: var(--textContent);
+        position: absolute;
+        left: 0;
+        right: 0;
+        mix-blend-mode: screen;
+      }
+  
+      &::after {
+        color: #ff0000;
+        transform: translateX(3%);
+      }
+  
+      &::before{
+        color: #0000ff;
+        transform: translateX(-2%);
+      }
+    }
+  }
+
+  .wallpaperVideo {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}
