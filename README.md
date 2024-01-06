@@ -5,7 +5,6 @@
 - 🎵 Personal Music Recommendations
 - 🎴 Nice Music Cards and Motion Effects
 - 📂 Chunked Upload, Breakpoint Resume, second upload
--
 
 ## 🤩 Contributing
 
