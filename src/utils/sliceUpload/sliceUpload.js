@@ -9,7 +9,7 @@ import requestInstance from '../request';
  * @param {*} mergeUrl 请求进行文件合并的接口地址
  * @returns
  */
-async function uploadFile(file, baseChunkSize, uploadUrl, vertifyUrl, mergeUrl) {
+async function uploadFile(file, baseChunkSize, uploadUrl, vertifyUrl, mergeUrl, progress_cb) {
   const sliceFileWorker = new Worker(new URL('./sliceFileWorker.js', import.meta.url), { type: 'module' });
   sliceFileWorker.postMessage({ targetFile: file, baseChunkSize })
   sliceFileWorker.onmessage = async (e) => {
@@ -44,9 +44,11 @@ async function uploadFile(file, baseChunkSize, uploadUrl, vertifyUrl, mergeUrl) 
       const requestList = allChunkList.map(async (chunk, index) => {
         if (neededChunkList.includes(index + 1)) {
           const response = await uploadChunk(chunk, index + 1, fileHash, uploadUrl);
+
           //更新进度
           progress += Math.ceil(100 / allChunkList.length);
           if (progress >= 100) progress = 100;
+          progress_cb(progress);
           return response;
         }
       });

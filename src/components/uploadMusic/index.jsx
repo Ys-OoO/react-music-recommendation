@@ -28,9 +28,19 @@ export function UploadMusic() {
       handleCancel();
     }
   };
+  const onProgress = (progress) => {
+    console.log(progress);
+  };
   const onFinishFailed = (errorInfo) => {
     const { music } = errorInfo.values;
-    uploadFile(music, 5, '/music/uploadChunk', '/music/vertifyFile', '/music/mergeFile');
+    uploadFile(
+      music,
+      5,
+      '/music/uploadChunk',
+      '/music/vertifyFile',
+      '/music/mergeFile',
+      onProgress,
+    );
   };
 
   return (
