@@ -76,7 +76,7 @@ async function uploadChunk(chunk, index, fileHash, uploadUrl) {
  * @returns {chunkList:ArrayBuffer,fileHash:string}
  */
 // eslint-disable-next-line no-unused-vars
-async function syncSliceFile(targetFile, baseChunkSize = 1) {
+async function sliceFile(targetFile, baseChunkSize = 1) {
   return new Promise((resolve, reject) => {
     //初始化分片方法，兼容问题
     let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice;

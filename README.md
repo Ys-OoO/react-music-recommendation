@@ -24,6 +24,3 @@ Please contribute using [GitHub Flow](https://guides.github.com/introduction/flo
 ## 📞 Contacts
 
 - Email： ys0514@yeah.net
-
-# Todo
-分片上传部分需要结合Web Worker
