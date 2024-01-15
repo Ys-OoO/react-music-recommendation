@@ -1,6 +1,7 @@
 import { Button, Form, Input, Modal } from 'antd';
 import { useState } from 'react';
 import { uploadMusic } from '../../api/music/musicList';
+import { uploadFile } from '../../utils/sliceUpload/sliceUpload';
 import UploadFile from './upload';
 export function UploadMusic() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,8 +29,8 @@ export function UploadMusic() {
     }
   };
   const onFinishFailed = (errorInfo) => {
-    // const { music } = errorInfo.values;
-    // uploadFile(music, 5, '/music/uploadChunk', '/music/vertifyFile', '/music/mergeFile');
+    const { music } = errorInfo.values;
+    uploadFile(music, 5, '/music/uploadChunk', '/music/vertifyFile', '/music/mergeFile');
   };
 
   return (

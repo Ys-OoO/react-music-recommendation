@@ -1,31 +1,7 @@
 import SparkMD5 from 'spark-md5';
 import requestInstance from '../request';
 
-//暂时不需要封装组件
-// export function SliceUploadInput({ baseChunkSize, uploadUrl, vertifyUrl, mergeUrl }) {
-//   const inputRef = useRef(null);
-//   const [file, setFile] = useState(null);
-
-//   const updateFile = (e) => {
-//     console.log(e.target.files[0]);
-//   };
-
-//   useEffect(() => {
-//     const inputFileEle = inputRef.current;
-//     if (inputFileEle) {
-//       //
-//     }
-//   }, []);
-
-//   return (
-//     <>
-//       <input type="file" onChange={updateFile} id="sliceUpload" />
-//     </>
-//   );
-// }
-
 /**
- *
  * @param {File} targetFile 目标上传文件
  * @param {number} baseChunkSize 上传分块大小，单位Mb
  * @param {string} uploadUrl 上传文件的后端接口地址
@@ -34,47 +10,51 @@ import requestInstance from '../request';
  * @returns
  */
 async function uploadFile(file, baseChunkSize, uploadUrl, vertifyUrl, mergeUrl) {
-  const { chunkList, fileHash } = await sliceFile(file, baseChunkSize);
-  //所有分片 ArrayBuffer[]
-  let allChunkList = chunkList;
-  //需要上传的分片序列 number[]
-  let neededChunkList = [];
-  //上传进度
-  let progress = 0;
-  //发送请求,获取文件上传状态
-  if (vertifyUrl) {
-    const { data } = await requestInstance.post(vertifyUrl, {
-      fileHash,
-      totalCount: allChunkList.length,
-      extname: '.' + file.name.split('.').pop(),
-    });
-    const { neededFileList, message } = data;
-    if (message) console.info(message);
-    //无待上传文件，秒传
-    if (!neededFileList.length) return;
+  const sliceFileWorker = new Worker(new URL('./sliceFileWorker.js', import.meta.url), { type: 'module' });
+  sliceFileWorker.postMessage({ targetFile: file, baseChunkSize })
+  sliceFileWorker.onmessage = async (e) => {
+    const { chunkList, fileHash } = e.data;
+    //所有分片 ArrayBuffer[]
+    let allChunkList = chunkList;
+    //需要上传的分片序列 number[]
+    let neededChunkList = [];
+    //上传进度
+    let progress = 0;
+    //发送请求,获取文件上传状态
+    if (vertifyUrl) {
+      const { data } = await requestInstance.post(vertifyUrl, {
+        fileHash,
+        totalCount: allChunkList.length,
+        extname: '.' + file.name.split('.').pop(),
+      });
+      const { neededFileList, message } = data;
+      if (message) console.info(message);
+      //无待上传文件，秒传
+      if (!neededFileList.length) return;
 
-    //部分上传成功，更新unUploadChunkList
-    neededChunkList = neededFileList;
-  }
+      //部分上传成功，更新unUploadChunkList
+      neededChunkList = neededFileList;
+    }
 
-  //同步上传进度，断点续传情况下
-  progress = ((allChunkList.length - neededChunkList.length) / allChunkList.length) * 100;
+    //同步上传进度，断点续传情况下
+    progress = ((allChunkList.length - neededChunkList.length) / allChunkList.length) * 100;
 
-  //上传
-  if (allChunkList.length) {
-    const requestList = allChunkList.map(async (chunk, index) => {
-      if (neededChunkList.includes(index + 1)) {
-        const response = await uploadChunk(chunk, index + 1, fileHash, uploadUrl);
-        //更新进度
-        progress += Math.ceil(100 / allChunkList.length);
-        if (progress >= 100) progress = 100;
-        return response;
-      }
-    });
-    Promise.all(requestList).then(() => {
-      //发送请求，通知后端进行合并
-      requestInstance.post(mergeUrl, { fileHash, extname: '.mp4' });
-    });
+    //上传
+    if (allChunkList.length) {
+      const requestList = allChunkList.map(async (chunk, index) => {
+        if (neededChunkList.includes(index + 1)) {
+          const response = await uploadChunk(chunk, index + 1, fileHash, uploadUrl);
+          //更新进度
+          progress += Math.ceil(100 / allChunkList.length);
+          if (progress >= 100) progress = 100;
+          return response;
+        }
+      });
+      Promise.all(requestList).then(() => {
+        //发送请求，通知后端进行合并
+        requestInstance.post(mergeUrl, { fileHash, extname: '.mp4' });
+      });
+    }
   }
 }
 
@@ -93,7 +73,8 @@ async function uploadChunk(chunk, index, fileHash, uploadUrl) {
  * @param {number} baseChunkSize 上传分块大小，单位Mb
  * @returns {chunkList:ArrayBuffer,fileHash:string}
  */
-async function sliceFile(targetFile, baseChunkSize = 1) {
+// eslint-disable-next-line no-unused-vars
+async function syncSliceFile(targetFile, baseChunkSize = 1) {
   return new Promise((resolve, reject) => {
     //初始化分片方法，兼容问题
     let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice;
@@ -150,3 +131,4 @@ async function sliceFile(targetFile, baseChunkSize = 1) {
 }
 
 export { uploadFile };
+
